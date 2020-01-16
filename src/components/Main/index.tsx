@@ -1,12 +1,15 @@
 import  React,  { useState, useEffect } from 'react';
-import axios from 'axios';
 
+
+// First we need to write the interfaces in order to type the object we will receive from de API
+// Interface for the objet received
 interface APIDatas {
-    list: Array<Object>,
+    list: Array<DailyForecast>,
     city: City,
     country: string,
 }
 
+//Interface for the City Objet with id, name, coordonnates, timezone, sunrize and sunset which will be contained in the main objet APIDatas
 interface City {
     id: Number,
     name: string,
@@ -17,6 +20,22 @@ interface City {
     timezone: Number,
     sunrise: Number,
     sunset: Number
+}
+
+//Interface for the forecast datas 
+interface DailyForecast {
+    main: {
+        temp: Number,
+        feels_like: Number,
+        temp_min: Number,
+        temp_max: Number,
+        pressure: Number,
+        sea_level: Number,
+        grnd_level: Number,
+        humidity: Number,
+        temp_kf: Number,
+    }
+
 }
 
 let baseCity : APIDatas;
@@ -49,7 +68,14 @@ const Main: React.FC = ({}) => {
     return (
         <div>
     {loader && 
-    <div>Bienvenue à {currentCity.city.name} {console.log(`dans le render`, currentCity)}  </div>
+    <div>
+        <div>Bienvenue à {currentCity.city.name} {console.log(`dans le render`, currentCity)}, la température actuelle est de : {currentCity.list[0].main.temp} °C </div>
+            <div>{currentCity.list.map( day => {
+               console.log('map', day)
+               return (<p>{day.main.temp}</p>)
+                })
+            }</div>
+            </div>
     }
     { !loader &&
         <p>
