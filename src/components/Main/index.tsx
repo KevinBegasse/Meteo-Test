@@ -22,6 +22,7 @@ interface City {
 let baseCity : APIDatas;
 
 const Main: React.FC = ({}) => {
+    const [loader, setLoader] = useState(false)
     const [error, setError] = useState(false);
     const[cityForcast, setCityForcast] = useState(baseCity);
     useEffect(() => {
@@ -30,25 +31,32 @@ const Main: React.FC = ({}) => {
             .then(res => {
                 if(res.status !==200) {
                     setError(true);
+                    setLoader(false)
                     return;
                 }
                 res.json().then(data => {
                     console.log('data:', data)
                     setCityForcast(data);
                     setError(false);
+                    setLoader(true);
                 })
             })
         },[]
     )
     
-    useEffect(() => {
-
-    })
 
     let currentCity = cityForcast;
     return (
-    
-    <div>Bienvenue à {console.log(`dans le render`, currentCity)}  </div>
+        <div>
+    {loader && 
+    <div>Bienvenue à {currentCity.city.name} {console.log(`dans le render`, currentCity)}  </div>
+    }
+    { !loader &&
+        <p>
+            Pas de données météo pour cette ville, mais du soleil dans nos coeurs!
+        </p>
+    }
+    </div>
     )
 }
 
