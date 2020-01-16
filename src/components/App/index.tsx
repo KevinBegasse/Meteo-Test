@@ -1,10 +1,18 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+//local imports
+import logo from '../../logo.svg';
+import './App.css';
+import Header from '../Header';
+import Main from '../Main';
+
+
+
+export const App: React.FC = () => {
   return (
     <div className="App">
+      <Header />
+      <Main />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
