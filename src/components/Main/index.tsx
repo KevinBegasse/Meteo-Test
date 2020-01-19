@@ -2,6 +2,7 @@ import  React,  { useState, useEffect } from 'react';
 
 //Local imports
 import './Main.css';
+import DailyInformations from '../DailyInformations'
 
 
 // First we need to write the interfaces in order to type the object we will receive from de API
@@ -38,6 +39,7 @@ interface DailyForecast {
         humidity: Number,
         temp_kf: Number,
     }
+    dt: number,
     dt_txt: string,
     weather: Array<Weather>,
 
@@ -50,7 +52,12 @@ interface Weather {
     main: string
 }
 
+interface Props {
+    datas: APIDatas
+}
+
 let baseCity : APIDatas;
+let dayClicked: Array<DailyForecast>;
 
 const Main: React.FC = ({}) => {
     //Definition of the state with the useState Hooks
@@ -62,6 +69,8 @@ const Main: React.FC = ({}) => {
     const[cityForcast, setCityForcast] = useState(baseCity);
     //The selectedDay is set to false and becomes true if the user clics on a day
     const [selectedDay, setSelectedDay] =useState(false)
+    //The id is the number of the day clicked on by the users 
+    const [daysID, setDaysId] = useState('');
     //Use effect is used at the first rendering of the DOM
     useEffect(() => {
         //Todo => Replace API KEY by process.env.REACT_APP_API_KEY
@@ -85,60 +94,90 @@ const Main: React.FC = ({}) => {
         },[]
     )
     
-
+    // We get the city after the date is completed and put it into the variable currentCity
     let currentCity: APIDatas = cityForcast;
-    // To convert the date from string to local date time to sort the date (from the data) first.
+
+    // Converting the date from string to local date time to sort the date (from the data) first.
     const options: Object = {weekday: "long", year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'};
     function formatedDate(dateToFormate :number) : string {
         return new Date(dateToFormate).toLocaleDateString(undefined, options);
     }
+
     //Function to obtain the hours of each datas in order to show the weather forecast at 12 for the days of the week.
     function midDayForecast( dt : string) : number {
         let baseDate = new Date(dt);
         return baseDate.getHours();
     }
 
+    //Function to obtain the number of the day the user clicked on
+    function getSelectedDay (day: string) : number {
+        let baseDay = new Date(day);
+        return baseDay.getDay();
+    }
+
     //Function to react on the user's click on the day of the week he wants details on
-    function handleClik(id: number) : void {
-        setSelectedDay(true);
+    function handleClik(day: string) : void {
+        setSelectedDay(!selectedDay);
+        setDaysId(day);
+        
     }
 
     return (
         <div>
-    {loader && 
-    <div>
-        <div>Bienvenue à {currentCity.city.name} , la température actuelle est de : {currentCity.list[0].main.temp} °C nous sommes le {new Date().toLocaleDateString(undefined, options)}</div>
-            <div>{
-            
-            currentCity.list.map( (day, index) => {
-               console.log('map', day, 'index:', index, 'et currentCity.list', currentCity.list)
-               // We want to show the first value of the array and then all the days to come with a default temperature sets on 12h.
-               if (index === 0 || midDayForecast(day.dt_txt) === 12){
-               return (
-                   <div className="dailyForcast" key={index} onClick={() => handleClik(1)}>
-                        <p>{formatedDate(Date.parse(day.dt_txt))} et {midDayForecast(day.dt_txt) + typeof(midDayForecast(day.dt_txt))}</p>
-               <p>ciel : {day.weather[0].description} température : {day.main.temp}°C </p>
+            {loader && 
+                <div /*className="overlay" onClick={() => {console.log('click overlay'); setSelectedDay(false)}}*/>
+                    <div>
+                        Bienvenue à {currentCity.city.name} , la température actuelle est de : {currentCity.list[0].main.temp} °C nous sommes le {new Date().toLocaleDateString(undefined, options)}
                     </div>
-               )
-               } else{
-                   return
-               }
-                })
-            }</div>
-            </div>
-    }
-    { error &&
-        <p>
-            Pas de données météo pour cette ville, mais du soleil dans nos coeurs!
-        </p>
-    }
-    {
-        selectedDay && 
-        <div>
-            <h1>Vous avez cliqué sur un jour !</h1>
+                    <div>
+                        {
+                    
+                        currentCity.list.map( (day, index) => {
+                        console.log('map', day, 'index:', index, 'et currentCity.list', currentCity.list)
+                        // We want to show the first value of the array and then all the days to come with a default temperature sets on 12h.
+                        if (index === 0 || midDayForecast(day.dt_txt) === 12){
+                        return (
+
+                            <div className="dailyForcast" key={day.dt} onClick={() => {
+                                console.log('click daily');
+                                handleClik(day.dt_txt)}}>
+                                    <p>{formatedDate(Date.parse(day.dt_txt))} et {midDayForecast(day.dt_txt) + typeof(midDayForecast(day.dt_txt))} et {getSelectedDay(day.dt_txt)}</p>
+                        <p>ciel : {day.weather[0].description} température : {day.main.temp}°C </p>
+                                </div>
+                        )
+                        } else{
+                            return
+                        }
+                            })
+                        }
+                    </div>
+                </div>
+            }
+
+            { error &&
+                <p>
+                    Pas de données météo pour cette ville, mais du soleil dans nos coeurs!
+                </p>
+            }
+
+            {
+                selectedDay && 
+                <div>
+                    <p>test</p>
+                  {  dayClicked = currentCity.list.filter( day => getSelectedDay(day.dt_txt) === getSelectedDay(daysID))}
+        
+
+                {dayClicked.map( data => {
+                    console.log('data of the day', data)
+                    return (
+                        <DailyInformations datas={data} />
+                    )
+                })}
+        
+
+                </div>
+            }
         </div>
-    }
-    </div>
     )
 }
 
