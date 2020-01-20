@@ -3,6 +3,7 @@ import  React,  { useState, useEffect } from 'react';
 //Local imports
 import './Main.css';
 import DailyInformations from '../DailyInformations'
+import { DefaultSerializer } from 'v8';
 
 
 // First we need to write the interfaces in order to type the object we will receive from de API
@@ -15,46 +16,54 @@ interface APIDatas {
 
 //Interface for the City Objet with id, name, coordonnates, timezone, sunrize and sunset which will be contained in the main objet APIDatas
 interface City {
-    id: Number,
+    id: number,
     name: string,
     coord : {
-        lat: Number,
-        long: Number
+        lat: number,
+        long: number
     },
-    timezone: Number,
-    sunrise: Number,
-    sunset: Number
+    timezone: number,
+    sunrise: number,
+    sunset: number
 }
 
 //Interface for the forecast datas 
 interface DailyForecast {
     main: {
-        temp: Number,
-        feels_like: Number,
-        temp_min: Number,
-        temp_max: Number,
-        pressure: Number,
-        sea_level: Number,
-        grnd_level: Number,
-        humidity: Number,
-        temp_kf: Number,
+        temp: number,
+        feels_like: number,
+        temp_min: number,
+        temp_max: number,
+        pressure: number,
+        sea_level: number,
+        grnd_level: number,
+        humidity: number,
+        temp_kf: number,
     }
     dt: number,
     dt_txt: string,
     weather: Array<Weather>,
+    clouds: Clouds,
+    wind: Wind,
 
+}
+
+interface Clouds {
+    all : number;
+}
+
+interface Wind {
+    deg: number,
+    speed: number,
 }
 
 interface Weather {
     description: string,
     icon: string,
-    id: Number,
+    id: number,
     main: string
 }
 
-interface Props {
-    datas: APIDatas
-}
 
 let baseCity : APIDatas;
 let dayClicked: Array<DailyForecast>;
@@ -142,7 +151,7 @@ const Main: React.FC = ({}) => {
                                 console.log('click daily');
                                 handleClik(day.dt_txt)}}>
                                     <p>{formatedDate(Date.parse(day.dt_txt))} et {midDayForecast(day.dt_txt) + typeof(midDayForecast(day.dt_txt))} et {getSelectedDay(day.dt_txt)}</p>
-                        <p>ciel : {day.weather[0].description} température : {day.main.temp}°C </p>
+                        <p>ciel : {day.weather[0].description} température : {day.main.temp}°C et ciel : {day.weather[0].description}</p>
                                 </div>
                         )
                         } else{
@@ -164,13 +173,37 @@ const Main: React.FC = ({}) => {
                 selectedDay && 
                 <div>
                     <p>test</p>
+                {/* Filtering resulst to keep only datas of the selected day then mapping on those results*/}
                   {  dayClicked = currentCity.list.filter( day => getSelectedDay(day.dt_txt) === getSelectedDay(daysID))}
         
 
                 {dayClicked.map( data => {
-                    console.log('data of the day', data)
+                    console.log('data of the day', {...data}, data.dt_txt, data.weather[0].description)
+
+                    
+                    
+                    //TODO : find a way to spread all those properties. the {...data} did not worked beacause of the object it contained
                     return (
-                        <DailyInformations datas={data} />
+                        
+                        //ERROR OBJECTS ARE NOT VALID AS REACT CHILD
+                    <p key={data.dt_txt}>tada! </p>
+                        // <DailyInformations key={data.dt_txt}
+                        //     all={data.clouds.all}
+                        //     deg={data.wind.deg}
+                        //     speed={data.wind.speed}
+                        //     feels_like= {data.main.feels_like}
+                        //     grnd_level={data.main.grnd_level}
+                        //     humidity={data.main.humidity}
+                        //     pressure={data.main.pressure}
+                        //     seal_level={data.main.sea_level}
+                        //     temp={data.main.temp}
+                        //     temp_kf={data.main.temp_kf}
+                        //     temp_max={data.main.temp_max}
+                        //     temp_min={data.main.temp_min}
+                        //     // weather={...data.weather}
+                        //     dt={data.dt}
+                        //     dt_txt={data.dt_txt}
+                        // />
                     )
                 })}
         
