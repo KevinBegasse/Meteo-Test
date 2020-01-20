@@ -1,10 +1,8 @@
-import  React,  { useState, useEffect } from 'react';
+import  React,  { useState, useEffect, Children } from 'react';
 
 //Local imports
 import './Main.css';
-import DailyInformations from '../DailyInformations'
-import { DefaultSerializer } from 'v8';
-
+import DailyInformations from '../DailyInformations';
 
 // First we need to write the interfaces in order to type the object we will receive from de API
 // Interface for the objet received
@@ -68,7 +66,7 @@ interface Weather {
 let baseCity : APIDatas;
 let dayClicked: Array<DailyForecast>;
 
-const Main: React.FC = ({}) => {
+const Main: React.FC = () => {
     //Definition of the state with the useState Hooks
     //Loader start on false before the request to database, when the request is completed it passes on true which permit to refresh the DOM
     const [loader, setLoader] = useState(false)
@@ -80,10 +78,13 @@ const Main: React.FC = ({}) => {
     const [selectedDay, setSelectedDay] =useState(false)
     //The id is the number of the day clicked on by the users 
     const [daysID, setDaysId] = useState('');
+
+
+
     //Use effect is used at the first rendering of the DOM
     useEffect(() => {
         //Todo => Replace API KEY by process.env.REACT_APP_API_KEY
-        fetch(`http://api.openweathermap.org/data/2.5/forecast?units=metric&id=2983990&APPID=d02c19588f3d2c2f36afd7891ffbba44`)
+        fetch(`http://api.openweathermap.org/data/2.5/forecast?units=metric&id=2983990&APPID=${process.env.REACT_APP_API_KEY}`)
             .then(res => {
                 if(res.status !==200) {
                     //If the request is incorrect, the error is set tu true and the conditionnal rendering will show the error message.
@@ -155,11 +156,12 @@ const Main: React.FC = ({}) => {
                                 </div>
                         )
                         } else{
-                            return
+                            return ""
                         }
                             })
                         }
                     </div>
+                    
                 </div>
             }
 
@@ -171,8 +173,9 @@ const Main: React.FC = ({}) => {
 
             {
                 selectedDay && 
+
                 <div>
-                    <p>test</p>
+                
                 {/* Filtering resulst to keep only datas of the selected day then mapping on those results*/}
                   {  dayClicked = currentCity.list.filter( day => getSelectedDay(day.dt_txt) === getSelectedDay(daysID))}
         
@@ -184,31 +187,37 @@ const Main: React.FC = ({}) => {
                     
                     //TODO : find a way to spread all those properties. the {...data} did not worked beacause of the object it contained
                     return (
+                        <DailyInformations display={true}>{Children}</DailyInformations>
+                        // <div>
+                        //     <p>{data.dt_txt}</p>
+                        //     <p>{data.main.temp}</p>
+                        //     <p>{data.weather[0].description}</p>
+                        // </div>
+                //         //ERROR OBJECTS ARE NOT VALID AS REACT CHILD
+                        // <DailyInformations 
                         
-                        //ERROR OBJECTS ARE NOT VALID AS REACT CHILD
-                    <p key={data.dt_txt}>tada! </p>
-                        // <DailyInformations key={data.dt_txt}
-                        //     all={data.clouds.all}
-                        //     deg={data.wind.deg}
-                        //     speed={data.wind.speed}
-                        //     feels_like= {data.main.feels_like}
-                        //     grnd_level={data.main.grnd_level}
-                        //     humidity={data.main.humidity}
-                        //     pressure={data.main.pressure}
-                        //     seal_level={data.main.sea_level}
-                        //     temp={data.main.temp}
-                        //     temp_kf={data.main.temp_kf}
-                        //     temp_max={data.main.temp_max}
-                        //     temp_min={data.main.temp_min}
-                        //     // weather={...data.weather}
-                        //     dt={data.dt}
-                        //     dt_txt={data.dt_txt}
+                        // daysId={daysID}
+                            // all={data.clouds.all}
+                            // deg={data.wind.deg}
+                            // speed={data.wind.speed}
+                            // feels_like= {data.main.feels_like}
+                            // grnd_level={data.main.grnd_level}
+                            // humidity={data.main.humidity}
+                            // pressure={data.main.pressure}
+                            // seal_level={data.main.sea_level}
+                            // temp={data.main.temp}
+                            // temp_kf={data.main.temp_kf}
+                            // temp_max={data.main.temp_max}
+                            // temp_min={data.main.temp_min}
+                            // // weather={...data.weather}
+                            // dt={data.dt}
+                            // dt_txt={data.dt_txt}
                         // />
                     )
                 })}
         
-
                 </div>
+              
             }
         </div>
     )
