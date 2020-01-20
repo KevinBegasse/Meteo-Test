@@ -2,7 +2,8 @@ import  React,  { useState, useEffect, Children } from 'react';
 
 //Local imports
 import './Main.css';
-import DailyInformations from '../DailyInformations';
+// Tried to nest a child composant but got issue with the type validation
+// import DailyInformations from '../DailyInformations';
 
 // First we need to write the interfaces in order to type the object we will receive from de API
 // Interface for the objet received
@@ -177,42 +178,12 @@ const Main: React.FC = () => {
                 <div>
                 
                 {/* Filtering resulst to keep only datas of the selected day then mapping on those results*/}
-                  {  dayClicked = currentCity.list.filter( day => getSelectedDay(day.dt_txt) === getSelectedDay(daysID))}
-        
-
-                {dayClicked.map( data => {
+                  { currentCity.list.filter( day => getSelectedDay(day.dt_txt) === getSelectedDay(daysID)).map( data => {
                     console.log('data of the day', {...data}, data.dt_txt, data.weather[0].description)
-
-                    
-                    
-                    //TODO : find a way to spread all those properties. the {...data} did not worked beacause of the object it contained
-                    return (
-                        <DailyInformations display={true}>{Children}</DailyInformations>
-                        // <div>
-                        //     <p>{data.dt_txt}</p>
-                        //     <p>{data.main.temp}</p>
-                        //     <p>{data.weather[0].description}</p>
-                        // </div>
-                //         //ERROR OBJECTS ARE NOT VALID AS REACT CHILD
-                        // <DailyInformations 
-                        
-                        // daysId={daysID}
-                            // all={data.clouds.all}
-                            // deg={data.wind.deg}
-                            // speed={data.wind.speed}
-                            // feels_like= {data.main.feels_like}
-                            // grnd_level={data.main.grnd_level}
-                            // humidity={data.main.humidity}
-                            // pressure={data.main.pressure}
-                            // seal_level={data.main.sea_level}
-                            // temp={data.main.temp}
-                            // temp_kf={data.main.temp_kf}
-                            // temp_max={data.main.temp_max}
-                            // temp_min={data.main.temp_min}
-                            // // weather={...data.weather}
-                            // dt={data.dt}
-                            // dt_txt={data.dt_txt}
-                        // />
+                       return (
+                            <div key={data.dt}>
+                                <p>{` ${formatedDate(Date.parse(data.dt_txt))} le temps sera ${data.weather[0].description} la température sera de ${data.main.temp}°C mais de ${data.main.feels_like}°C en ressenti`}</p>
+                            </div>
                     )
                 })}
         
