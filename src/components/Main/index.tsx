@@ -136,11 +136,11 @@ const Main: React.FC = () => {
     return (
         <div>
             {loader && 
-                <div /*className="overlay" onClick={() => {console.log('click overlay'); setSelectedDay(false)}}*/>
+                <div className="container">
                     <div>
                         Bienvenue à {currentCity.city.name} , la température actuelle est de : {currentCity.list[0].main.temp} °C nous sommes le {new Date().toLocaleDateString(undefined, options)}
                     </div>
-                    <div>
+                    <div className="weekContainer">
                         {
                     
                         currentCity.list.map( (day, index) => {

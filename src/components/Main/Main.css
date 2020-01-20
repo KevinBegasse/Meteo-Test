@@ -1,12 +1,16 @@
-.overlay {
+.container{
     border: 2px solid orange;
 }
 
-.dailyForcast{
-    margin: 10px auto;
-    width: 50%;
-    border: 3px solid black;
-    border-radius: 10px;
-    z-index: 1;
+.weekContainer{
+    border: 1px solid red;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
 }
 
+.dailyForcast {
+    border: 1px solid black;
+    border-radius : 5px;
+    width: 20%;
+}
