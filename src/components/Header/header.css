@@ -1,10 +1,10 @@
 
 .headersBody{
     font-size: 3rem;
-    color: blue;
+    color: #fff;
     text-align: center;
     height : 150px;
     padding-top: calc((150px - 3rem) / 2);
-    background-size:cover;
+    background-color: #6a6363;
     height: 10rem;
 }
