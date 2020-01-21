@@ -1,6 +1,10 @@
 
 .headersBody{
-    background-image: url('./landscape.png');
+    font-size: 3rem;
+    color: blue;
+    text-align: center;
+    height : 150px;
+    padding-top: calc((150px - 3rem) / 2);
     background-size:cover;
     height: 10rem;
 }

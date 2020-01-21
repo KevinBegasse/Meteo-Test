@@ -1,26 +1,25 @@
 .container{
-    border: 2px solid orange;
     display: flex; 
     position: relative;
 }
 
 .welcome{
-    border : 2px solid green;
+    font-size: larger;
     width: 100%;
     position: absolute;
 }
 
 .weekContainer{
-    border: 1px solid red;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    width: 60%;
+    min-width: 70%;
     margin-top: 10%;
     margin-left: 10%;
 }
 
 .dailyForcast {
+    background-color: #ccc0c0cc;
     border: 1px solid black;
     border-radius : 5px;
     width: 100%;
@@ -80,9 +79,49 @@
     width: 50%;
 }
 
+.moderate  {
+    background-image: url('./img/moderateRain.png');
+    background-size: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 50%;
+}
+
+.heavy  {
+    background-image: url('./img/HeavyIntensityRain.png');
+    background-size: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 50%;
+}
+
 .dailyDatas {
-    border : 3px solid yellow;
-    width: 100%;
+    border : 3px solid black;
+    background-color:#ccc0c0cc;
+    padding:1%;
+    border-radius: 10px;
+    box-shadow: 1px 1px;
+    max-width: 50%;
+    margin: auto;
     margin-top: 10%;
     align-self: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.dailyDatas p {
+    padding-top: 0;
+    align-self: center;
+    margin-left: 1rem;
+    border-bottom: 1px dashed black;
+    display: block;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 8%;
+
+}
+
+.dailyDatas img {
+    margin-bottom: 0;
 }

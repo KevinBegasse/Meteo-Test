@@ -1,7 +1,18 @@
-import  React,  { useState, useEffect } from 'react';
+import  React,  { useState, useEffect, useRef } from 'react';
 
 //Local imports
 import './Main.css';
+
+//small images imports
+import smallClear  from './img/smallclear.png';
+import smallScattered from './img/smallScattered.png';
+import smallBroken from './img/smallBroken.png';
+import smallOvercast from './img/smallOvercast.png';
+import smallLightRain from './img/smallLightRain.png';
+import smallNight from './img/smallNight.png';
+import smallModerateRain from './img/smallModerateRain.png';
+import smallHeavyIntensityRain from './img/smallHeavyIntensityRain.png';
+
 // Tried to nest a child composant but got issue with the type validation
 // import DailyInformations from '../DailyInformations';
 
@@ -65,7 +76,7 @@ interface Weather {
 
 
 let baseCity : APIDatas;
-let dayClicked: Array<DailyForecast>;
+
 
 const Main: React.FC = () => {
     //Definition of the state with the useState Hooks
@@ -79,12 +90,14 @@ const Main: React.FC = () => {
     const [selectedDay, setSelectedDay] =useState(false)
     //The id is the number of the day clicked on by the users 
     const [daysID, setDaysId] = useState('');
-
+    // We use ref to focus on the div when a day is selected
+    // TODO : adjust the focus even when the div display another day without being close first (by reclicking on the same day)
+    let mainRef = useRef(null);
 
 
     //Use effect is used at the first rendering of the DOM
     useEffect(() => {
-        //Todo => Replace API KEY by process.env.REACT_APP_API_KEY
+        //Let's get the data from the API
         fetch(`http://api.openweathermap.org/data/2.5/forecast?units=metric&id=2983990&APPID=${process.env.REACT_APP_API_KEY}`)
             .then(res => {
                 if(res.status !==200) {
@@ -102,7 +115,7 @@ const Main: React.FC = () => {
                     setLoader(true);
                 })
             })
-        },[]
+        },[mainRef]
     )
     
     // We get the city after the date is completed and put it into the variable currentCity
@@ -134,11 +147,12 @@ const Main: React.FC = () => {
         } else {
         setSelectedDay(true);
         setDaysId(day);
+        ;
         }
         
     }
 
-    //Function to adjust the meteo icon with the sky
+  
 
     return (
         <div className="container">
@@ -147,6 +161,7 @@ const Main: React.FC = () => {
                     <div className="welcome">
                         Bienvenue à {currentCity.city.name} , la température actuelle est de : {currentCity.list[0].main.temp} °C nous sommes le {new Date().toLocaleDateString(undefined, options)}
                     </div>
+                    
                     <div className="weekContainer">
                         {
                     
@@ -160,8 +175,8 @@ const Main: React.FC = () => {
                                 console.log('click daily');
                                 handleClik(day.dt_txt)}}>
                                     <div className="dailyInfos">
-                                        <p>{formatedDate(Date.parse(day.dt_txt))} et {midDayForecast(day.dt_txt) + typeof(midDayForecast(day.dt_txt))} et {getSelectedDay(day.dt_txt)}</p>
-                                        <p>ciel : {day.weather[0].description} température : {day.main.temp}°C et ciel : {day.weather[0].description}</p>
+                                        <p>{formatedDate(Date.parse(day.dt_txt))} {/*et {midDayForecast(day.dt_txt) + typeof(midDayForecast(day.dt_txt))} et {getSelectedDay(day.dt_txt)*/}</p>
+                            <p>température : {day.main.temp}°C (ressentie {day.main.feels_like}°C)</p>
                                     </div>
                                     <div className={day.weather[0].description}></div>
                                     </div>
@@ -185,14 +200,35 @@ const Main: React.FC = () => {
             {
                 selectedDay && 
 
-                <div className="dailyDatas">
+                <div className="dailyDatas" ref={mainRef} tabIndex={-1}>
                 
                 {/* Filtering resulst to keep only datas of the selected day then mapping on those results*/}
                   { currentCity.list.filter( day => getSelectedDay(day.dt_txt) === getSelectedDay(daysID)).map( data => {
                     console.log('data of the day', {...data}, data.dt_txt, data.weather[0].description)
+                    let skyImg:string = "";
+                    console.log(data.weather[0].description)
+                    if(midDayForecast(data.dt_txt) <= 6 || midDayForecast(data.dt_txt) > 18){
+                        skyImg=smallNight;
+                    }else if(data.weather[0].description === "clear sky"){
+                        skyImg=smallClear;                        
+                    }else if(data.weather[0].description === "few clouds" ||data.weather[0].description === "scattered clouds"){
+                        skyImg=smallScattered;
+                    } else if(data.weather[0].description === "broken clouds"){
+                        skyImg=smallBroken;
+                    }else if(data.weather[0].description === "overcast clouds"){
+                    skyImg=smallOvercast;
+                    }else if (data.weather[0].description === "light rain"){
+                        skyImg=smallLightRain;
+                    }else if (data.weather[0].description === "moderate rain"){
+                        skyImg=smallModerateRain;
+                    }else if (data.weather[0].description === "heavy intensity rain"){
+                        skyImg=smallHeavyIntensityRain;
+                    }
+                    
                        return (
                             <div key={data.dt} className="dailyData">
-                                <p>{` ${formatedDate(Date.parse(data.dt_txt))} le temps sera ${data.weather[0].description} la température sera de ${data.main.temp}°C mais de ${data.main.feels_like}°C en ressenti`}</p>
+                                <img src={skyImg} alt={data.weather[0].description}></img>
+                                <p>{`À ${midDayForecast(data.dt_txt)}h la température sera de ${data.main.temp}°C mais de ${data.main.feels_like}°C en ressenti`}</p>
                             </div>
                     )
                 })}

@@ -5,7 +5,7 @@ import './header.css';
 
 
 const Header: React.FC = () => {
-    return (<div className="headersBody">Test</div>)
+    return (<div className="headersBody">Météo Rennaise</div>)
 }
 
 export default Header; 
