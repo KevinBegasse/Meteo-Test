@@ -1,4 +1,4 @@
-import  React,  { useState, useEffect, Children } from 'react';
+import  React,  { useState, useEffect } from 'react';
 
 //Local imports
 import './Main.css';
@@ -128,16 +128,23 @@ const Main: React.FC = () => {
 
     //Function to react on the user's click on the day of the week he wants details on
     function handleClik(day: string) : void {
+        // The Hourly forcast div only disapears if the user clicks on the same day. Otherwise it refresh to show the new day the user clicked on.
+        if(daysID === day){
         setSelectedDay(!selectedDay);
+        } else {
+        setSelectedDay(true);
         setDaysId(day);
+        }
         
     }
 
+    //Function to adjust the meteo icon with the sky
+
     return (
-        <div>
+        <div className="container">
             {loader && 
-                <div className="container">
-                    <div>
+                <div>
+                    <div className="welcome">
                         Bienvenue à {currentCity.city.name} , la température actuelle est de : {currentCity.list[0].main.temp} °C nous sommes le {new Date().toLocaleDateString(undefined, options)}
                     </div>
                     <div className="weekContainer">
@@ -152,9 +159,12 @@ const Main: React.FC = () => {
                             <div className="dailyForcast" key={day.dt} onClick={() => {
                                 console.log('click daily');
                                 handleClik(day.dt_txt)}}>
-                                    <p>{formatedDate(Date.parse(day.dt_txt))} et {midDayForecast(day.dt_txt) + typeof(midDayForecast(day.dt_txt))} et {getSelectedDay(day.dt_txt)}</p>
-                        <p>ciel : {day.weather[0].description} température : {day.main.temp}°C et ciel : {day.weather[0].description}</p>
-                                </div>
+                                    <div className="dailyInfos">
+                                        <p>{formatedDate(Date.parse(day.dt_txt))} et {midDayForecast(day.dt_txt) + typeof(midDayForecast(day.dt_txt))} et {getSelectedDay(day.dt_txt)}</p>
+                                        <p>ciel : {day.weather[0].description} température : {day.main.temp}°C et ciel : {day.weather[0].description}</p>
+                                    </div>
+                                    <div className={day.weather[0].description}></div>
+                                    </div>
                         )
                         } else{
                             return ""
@@ -165,23 +175,23 @@ const Main: React.FC = () => {
                     
                 </div>
             }
-
+            {/** If the request from the API retrun an error, we just have to wish a nice and warm day to the user */}
             { error &&
                 <p>
                     Pas de données météo pour cette ville, mais du soleil dans nos coeurs!
                 </p>
             }
-
+           {/** If the user clicks on a day, we show him the details of that day*/} 
             {
                 selectedDay && 
 
-                <div>
+                <div className="dailyDatas">
                 
                 {/* Filtering resulst to keep only datas of the selected day then mapping on those results*/}
                   { currentCity.list.filter( day => getSelectedDay(day.dt_txt) === getSelectedDay(daysID)).map( data => {
                     console.log('data of the day', {...data}, data.dt_txt, data.weather[0].description)
                        return (
-                            <div key={data.dt}>
+                            <div key={data.dt} className="dailyData">
                                 <p>{` ${formatedDate(Date.parse(data.dt_txt))} le temps sera ${data.weather[0].description} la température sera de ${data.main.temp}°C mais de ${data.main.feels_like}°C en ressenti`}</p>
                             </div>
                     )

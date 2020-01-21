@@ -1,16 +1,88 @@
 .container{
     border: 2px solid orange;
+    display: flex; 
+    position: relative;
+}
+
+.welcome{
+    border : 2px solid green;
+    width: 100%;
+    position: absolute;
 }
 
 .weekContainer{
     border: 1px solid red;
     display: flex;
+    flex-direction: column;
     justify-content: space-around;
-    width: 100%;
+    width: 60%;
+    margin-top: 10%;
+    margin-left: 10%;
 }
 
 .dailyForcast {
     border: 1px solid black;
     border-radius : 5px;
-    width: 20%;
+    width: 100%;
+    display: flex;
+    margin: 2% auto;;
+}
+
+.dailyInfos {
+    width: 50%;
+}
+
+.scattered {
+    background-image: url('./img/scatteredClouds.png');
+    background-size: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 50%;
+}
+
+.few {
+    background-image: url('./img/scatteredClouds.png');
+    background-size: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 50%;
+}
+
+.clear {
+    background-image: url('./img/clearSky.png');
+    background-size: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 50%;
+}
+
+.overcast {
+    background-image: url('./img/overcastCloud.png');
+    background-size: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 50%;
+}
+
+.broken  {
+    background-image: url('./img/brokenClouds.png');
+    background-size: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 50%;
+}
+
+.light  {
+    background-image: url('./img/lightRain.png');
+    background-size: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 50%;
+}
+
+.dailyDatas {
+    border : 3px solid yellow;
+    width: 100%;
+    margin-top: 10%;
+    align-self: flex-start;
 }
