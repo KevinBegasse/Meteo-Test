@@ -109,7 +109,6 @@ const Main: React.FC = () => {
                 }
                 res.json().then(data => {
                     // Once the request is complete, we set the values as decided to acces the datas
-                    console.log('data:', data)
                     setCityForcast(data);
                     setError(false);
                     setLoader(true);
@@ -122,7 +121,7 @@ const Main: React.FC = () => {
     let currentCity: APIDatas = cityForcast;
 
     // Converting the date from string to local date time to sort the date (from the data) first.
-    const options: Object = {weekday: "long", year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'};
+    const options: Object = {weekday: "long", year: 'numeric', month: 'long', day: 'numeric'};
     function formatedDate(dateToFormate :number) : string {
         return new Date(dateToFormate).toLocaleDateString(undefined, options);
     }
@@ -166,23 +165,23 @@ const Main: React.FC = () => {
                         {
                     
                         currentCity.list.map( (day, index) => {
-                        console.log('map', day, 'index:', index, 'et currentCity.list', currentCity.list)
+                        //console.log('map', day, 'index:', index, 'et currentCity.list', currentCity.list)
                         // We want to show the first value of the array and then all the days to come with a default temperature sets on 12h.
-                        if (index === 0 || midDayForecast(day.dt_txt) === 12){
+                        if (index === 0 || (midDayForecast(day.dt_txt) === 12 && (getSelectedDay(day.dt_txt) !== getSelectedDay(currentCity.list[0].dt_txt)))){
                         return (
 
                             <div className="dailyForcast" key={day.dt} onClick={() => {
-                                console.log('click daily');
                                 handleClik(day.dt_txt)}}>
                                     <div className="dailyInfos">
-                                        <p>{formatedDate(Date.parse(day.dt_txt))} {/*et {midDayForecast(day.dt_txt) + typeof(midDayForecast(day.dt_txt))} et {getSelectedDay(day.dt_txt)*/}</p>
-                            <p>température : {day.main.temp}°C (ressentie {day.main.feels_like}°C)</p>
+                                        <p>{formatedDate(Date.parse(day.dt_txt))} {midDayForecast(day.dt_txt)}h. {/*et {midDayForecast(day.dt_txt) + typeof(midDayForecast(day.dt_txt))} et {getSelectedDay(day.dt_txt)*/}</p>
+                            <p>Température : {day.main.temp}°C (ressentie {day.main.feels_like}°C)</p>
                                     </div>
                                     <div className={day.weather[0].description}></div>
                                     </div>
                         )
-                        } else{
-                            return ""
+                        } else {
+                            //Typescript warning if no return : TODO => search a way to avoid warning, maybe a filter before the map
+                            return "";
                         }
                             })
                         }
@@ -204,9 +203,9 @@ const Main: React.FC = () => {
                 
                 {/* Filtering resulst to keep only datas of the selected day then mapping on those results*/}
                   { currentCity.list.filter( day => getSelectedDay(day.dt_txt) === getSelectedDay(daysID)).map( data => {
-                    console.log('data of the day', {...data}, data.dt_txt, data.weather[0].description)
+                    //console.log('data of the day', {...data}, data.dt_txt, data.weather[0].description)
                     let skyImg:string = "";
-                    console.log(data.weather[0].description)
+                    //Let's check the weather and put the right icon depending the weather (I didn't covered all the weathers yet)
                     if(midDayForecast(data.dt_txt) <= 6 || midDayForecast(data.dt_txt) > 18){
                         skyImg=smallNight;
                     }else if(data.weather[0].description === "clear sky"){
@@ -225,6 +224,7 @@ const Main: React.FC = () => {
                         skyImg=smallHeavyIntensityRain;
                     }
                     
+                    // Then we return a div for every datas of the day selected presenting the user the weather and the temperature but we could add the wind too if nécessairy
                        return (
                             <div key={data.dt} className="dailyData">
                                 <img src={skyImg} alt={data.weather[0].description}></img>
