@@ -74,6 +74,10 @@ interface Weather {
     main: string
 }
 
+interface LogoArray {
+    [key:string]: string,
+}
+
 
 let baseCity : APIDatas;
 
@@ -167,6 +171,7 @@ const Main: React.FC = () => {
                         currentCity.list.map( (day, index) => {
                         //console.log('map', day, 'index:', index, 'et currentCity.list', currentCity.list)
                         // We want to show the first value of the array and then all the days to come with a default temperature sets on 12h.
+                        // Had to add the && verification to avoid getting two div for the same day if it is before 9H, one at 9 and one at 12. Guess there is a simpler way to do it.
                         if (index === 0 || (midDayForecast(day.dt_txt) === 12 && (getSelectedDay(day.dt_txt) !== getSelectedDay(currentCity.list[0].dt_txt)))){
                         return (
 
@@ -204,30 +209,22 @@ const Main: React.FC = () => {
                 {/* Filtering resulst to keep only datas of the selected day then mapping on those results*/}
                   { currentCity.list.filter( day => getSelectedDay(day.dt_txt) === getSelectedDay(daysID)).map( data => {
                     //console.log('data of the day', {...data}, data.dt_txt, data.weather[0].description)
-                    let skyImg:string = "";
                     //Let's check the weather and put the right icon depending the weather (I didn't covered all the weathers yet)
-                    if(midDayForecast(data.dt_txt) <= 6 || midDayForecast(data.dt_txt) > 18){
-                        skyImg=smallNight;
-                    }else if(data.weather[0].description === "clear sky"){
-                        skyImg=smallClear;                        
-                    }else if(data.weather[0].description === "few clouds" ||data.weather[0].description === "scattered clouds"){
-                        skyImg=smallScattered;
-                    } else if(data.weather[0].description === "broken clouds"){
-                        skyImg=smallBroken;
-                    }else if(data.weather[0].description === "overcast clouds"){
-                    skyImg=smallOvercast;
-                    }else if (data.weather[0].description === "light rain"){
-                        skyImg=smallLightRain;
-                    }else if (data.weather[0].description === "moderate rain"){
-                        skyImg=smallModerateRain;
-                    }else if (data.weather[0].description === "heavy intensity rain"){
-                        skyImg=smallHeavyIntensityRain;
+                    const logoToDisplay: LogoArray = {
+                        "clear sky": smallNight,
+                        "few clouds": smallScattered,
+                        "scattered clouds": smallScattered,
+                        "broken clouds": smallBroken,
+                        "overcast clouds": smallOvercast,
+                        "light rain": smallLightRain,
+                        "moderate rain": smallModerateRain,
+                        "heavy intensity rain": smallHeavyIntensityRain
                     }
                     
                     // Then we return a div for every datas of the day selected presenting the user the weather and the temperature but we could add the wind too if nécessairy
                        return (
                             <div key={data.dt} className="dailyData">
-                                <img src={skyImg} alt={data.weather[0].description}></img>
+                                <img src={logoToDisplay[data.weather[0].description]} alt={data.weather[0].description}></img>
                                 <p>{`À ${midDayForecast(data.dt_txt)}h la température sera de ${data.main.temp}°C mais de ${data.main.feels_like}°C en ressenti`}</p>
                             </div>
                     )
