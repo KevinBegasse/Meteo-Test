@@ -211,15 +211,35 @@ const Main: React.FC = () => {
                     //console.log('data of the day', {...data}, data.dt_txt, data.weather[0].description)
                     //Let's check the weather and put the right icon depending the weather (I didn't covered all the weathers yet)
                     const logoToDisplay: LogoArray = {
-                        "clear sky": smallNight,
+                        "clear sky": smallClear,
                         "few clouds": smallScattered,
                         "scattered clouds": smallScattered,
                         "broken clouds": smallBroken,
                         "overcast clouds": smallOvercast,
                         "light rain": smallLightRain,
                         "moderate rain": smallModerateRain,
-                        "heavy intensity rain": smallHeavyIntensityRain
+                        "heavy intensity rain": smallHeavyIntensityRain,
+                        "night": smallNight
                     }
+                    //Covering the case when the sun is not up yet
+                    if(midDayForecast(data.dt_txt) <= 6 || midDayForecast(data.dt_txt) > 18){
+                        data.weather[0].description = "night";
+                    }
+                    // }else if(data.weather[0].description === "clear sky"){
+                    //     skyImg=smallClear;                        
+                    // }else if(data.weather[0].description === "few clouds" ||data.weather[0].description === "scattered clouds"){
+                    //     skyImg=smallScattered;
+                    // } else if(data.weather[0].description === "broken clouds"){
+                    //     skyImg=smallBroken;
+                    // }else if(data.weather[0].description === "overcast clouds"){
+                    // skyImg=smallOvercast;
+                    // }else if (data.weather[0].description === "light rain"){
+                    //     skyImg=smallLightRain;
+                    // }else if (data.weather[0].description === "moderate rain"){
+                    //     skyImg=smallModerateRain;
+                    // }else if (data.weather[0].description === "heavy intensity rain"){
+                    //     skyImg=smallHeavyIntensityRain;
+                    // }
                     
                     // Then we return a div for every datas of the day selected presenting the user the weather and the temperature but we could add the wind too if nécessairy
                        return (
