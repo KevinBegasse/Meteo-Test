@@ -23,8 +23,8 @@ interface LogoArray {
   [key:string]: string,
 }
 
-const DailyForcast: React.FC<Props> =(props) => {
-  let sky = props.sky;
+const DailyForcast: React.FC<Props> =({sky, hour, temp, feels}) => {
+  let skyLogo = sky;
   
   const logoToDisplay: LogoArray = {
     "clear sky": smallClear,
@@ -39,14 +39,14 @@ const DailyForcast: React.FC<Props> =(props) => {
   }
 
    //Covering the case when the sun is not up yet
-   if(props.hour <= 6 || props.hour > 18){
-    sky = "night";
+   if(hour <= 6 || hour > 18){
+    skyLogo = "night";
    }
 
     
         return <div className="dailyDat">
-                    <img src={logoToDisplay[sky]} alt={sky} />
-                    <p>{`À ${props.hour}h la température sera de ${props.temp}°C mais de ${props.feels}°C en ressenti`}</p>
+                    <img src={logoToDisplay[skyLogo]} alt={skyLogo} />
+                    <p>{`À ${hour}h la température sera de ${temp}°C mais de ${feels}°C en ressenti`}</p>
                 </div>
     
 
