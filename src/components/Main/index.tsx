@@ -3,18 +3,9 @@ import  React,  { useState, useEffect, useRef } from 'react';
 //Local imports
 import './Main.css';
 
-//small images imports
-import smallClear  from './img/smallclear.png';
-import smallScattered from './img/smallScattered.png';
-import smallBroken from './img/smallBroken.png';
-import smallOvercast from './img/smallOvercast.png';
-import smallLightRain from './img/smallLightRain.png';
-import smallNight from './img/smallNight.png';
-import smallModerateRain from './img/smallModerateRain.png';
-import smallHeavyIntensityRain from './img/smallHeavyIntensityRain.png';
 
 // Tried to nest a child composant but got issue with the type validation
-// import DailyInformations from '../DailyInformations';
+import DailyInformations from '../DailyInformations';
 
 // First we need to write the interfaces in order to type the object we will receive from de API
 // Interface for the objet received
@@ -74,9 +65,6 @@ interface Weather {
     main: string
 }
 
-interface LogoArray {
-    [key:string]: string,
-}
 
 
 let baseCity : APIDatas;
@@ -208,45 +196,11 @@ const Main: React.FC = () => {
                 
                 {/* Filtering resulst to keep only datas of the selected day then mapping on those results*/}
                   { currentCity.list.filter( day => getSelectedDay(day.dt_txt) === getSelectedDay(daysID)).map( data => {
-                    //console.log('data of the day', {...data}, data.dt_txt, data.weather[0].description)
-                    //Let's check the weather and put the right icon depending the weather (I didn't covered all the weathers yet)
-                    const logoToDisplay: LogoArray = {
-                        "clear sky": smallClear,
-                        "few clouds": smallScattered,
-                        "scattered clouds": smallScattered,
-                        "broken clouds": smallBroken,
-                        "overcast clouds": smallOvercast,
-                        "light rain": smallLightRain,
-                        "moderate rain": smallModerateRain,
-                        "heavy intensity rain": smallHeavyIntensityRain,
-                        "night": smallNight
-                    }
-                    //Covering the case when the sun is not up yet
-                    if(midDayForecast(data.dt_txt) <= 6 || midDayForecast(data.dt_txt) > 18){
-                        data.weather[0].description = "night";
-                    }
-                    // }else if(data.weather[0].description === "clear sky"){
-                    //     skyImg=smallClear;                        
-                    // }else if(data.weather[0].description === "few clouds" ||data.weather[0].description === "scattered clouds"){
-                    //     skyImg=smallScattered;
-                    // } else if(data.weather[0].description === "broken clouds"){
-                    //     skyImg=smallBroken;
-                    // }else if(data.weather[0].description === "overcast clouds"){
-                    // skyImg=smallOvercast;
-                    // }else if (data.weather[0].description === "light rain"){
-                    //     skyImg=smallLightRain;
-                    // }else if (data.weather[0].description === "moderate rain"){
-                    //     skyImg=smallModerateRain;
-                    // }else if (data.weather[0].description === "heavy intensity rain"){
-                    //     skyImg=smallHeavyIntensityRain;
-                    // }
-                    
                     // Then we return a div for every datas of the day selected presenting the user the weather and the temperature but we could add the wind too if nécessairy
                        return (
-                            <div key={data.dt} className="dailyData">
-                                <img src={logoToDisplay[data.weather[0].description]} alt={data.weather[0].description}></img>
-                                <p>{`À ${midDayForecast(data.dt_txt)}h la température sera de ${data.main.temp}°C mais de ${data.main.feels_like}°C en ressenti`}</p>
-                            </div>
+
+                                <DailyInformations key={data.dt} sky={data.weather[0].description} hour={midDayForecast(data.dt_txt)} temp={data.main.temp} feels={data.main.feels_like}/>
+
                     )
                 })}
         
